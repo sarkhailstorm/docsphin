@@ -22,7 +22,7 @@ export function Header() {
           <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-accent text-accent-ink">
             <ShieldCheck className="h-4 w-4" aria-hidden />
           </span>
-          {/* Four controls plus the name overflow a 320px phone, so the shield stands in */}
+          {/* Install plus Donate plus the name overflow a 320px phone */}
           <span className="text-[15px] max-[359px]:hidden">{site.name}</span>
         </Link>
 
@@ -48,9 +48,11 @@ export function Header() {
           >
             <Github className="h-4 w-4" aria-hidden />
           </a>
-          <ThemeToggle />
+          <div className="hidden sm:block">
+            <ThemeToggle />
+          </div>
           <InstallButton compact iosHint={false} />
-          <SupportButton size="sm" compact />
+          <SupportButton size="sm" />
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
@@ -77,7 +79,7 @@ export function Header() {
                 {tool.name}
               </Link>
             ))}
-            <div className="mt-2 flex items-center gap-2 border-t border-line px-3 pt-3">
+            <div className="mt-2 flex items-center justify-between gap-3 border-t border-line px-3 pt-3">
               <a
                 href={site.repo}
                 target="_blank"
@@ -87,6 +89,9 @@ export function Header() {
                 <Github className="h-4 w-4" aria-hidden />
                 GitHub
               </a>
+              <div className="sm:hidden">
+                <ThemeToggle labelled />
+              </div>
             </div>
           </nav>
         </div>
