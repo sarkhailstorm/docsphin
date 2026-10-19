@@ -23,7 +23,7 @@ import {
   type WordProgress,
   type WordReport,
 } from '@/lib/pdf-to-word';
-import { ErrorNote, FileLine, Note, Progress, Stat } from './shared';
+import { Choice, ErrorNote, FileLine, Note, Progress, Stat } from './shared';
 
 const MODES: readonly {
   id: WordMode;
@@ -56,41 +56,6 @@ function progressLabel({ stage, done, total }: WordProgress): string {
   if (stage === 'reading') return `Reading page ${page} of ${total}…`;
   if (stage === 'analysing') return 'Working out the layout…';
   return 'Writing your Word file…';
-}
-
-function Choice({
-  label,
-  hint,
-  checked,
-  disabled,
-  onChange,
-}: {
-  label: string;
-  hint: string;
-  checked: boolean;
-  disabled: boolean;
-  onChange: (checked: boolean) => void;
-}) {
-  return (
-    <label
-      className={cn(
-        '-mx-2 flex items-start gap-3 rounded-lg px-2 py-2 transition-colors',
-        disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer hover:bg-line/30',
-      )}
-    >
-      <input
-        type="checkbox"
-        checked={checked}
-        disabled={disabled}
-        onChange={(e) => onChange(e.target.checked)}
-        className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-line accent-accent disabled:cursor-not-allowed"
-      />
-      <span className="min-w-0">
-        <span className="block text-[13px] font-medium leading-snug text-ink">{label}</span>
-        <span className="mt-0.5 block text-[12px] leading-relaxed text-faint">{hint}</span>
-      </span>
-    </label>
-  );
 }
 
 interface ConvertResult {

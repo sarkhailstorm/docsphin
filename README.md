@@ -4,8 +4,9 @@
 
 **Private file tools that never leave your browser.**
 
-Merge PDFs and reorder their pages, tidy a messy spreadsheet, and crop a photo
-to the exact passport size a country asks for. Nothing is uploaded.
+Merge PDFs and reorder their pages, turn a Word file or a spreadsheet into a PDF,
+tidy a messy spreadsheet, and crop a photo to the exact passport size a country
+asks for. Nothing is uploaded.
 
 [Live site](https://freesecurekit.vercel.app) · [Report an issue](https://github.com/sarkhailstorm/free-secure-kit/issues)
 
@@ -21,7 +22,7 @@ Four everyday file and data utilities, in one place, free and without an account
 
 | Tool | What it does |
 | --- | --- |
-| [PDF Tools](src/app/tools/pdf-tools/page.tsx) | Merge PDFs and reorder their pages, extract pages as PDFs or PNG/JPEG images, compress, remove a known password (and the printing and copying restrictions) with qpdf, build a PDF from images, convert a PDF to an editable Word document, and turn the tables in a PDF into an Excel spreadsheet |
+| [PDF Tools](src/app/tools/pdf-tools/page.tsx) | Merge PDFs and reorder their pages, extract pages as PDFs or PNG/JPEG images, compress, remove a known password (and the printing and copying restrictions) with qpdf, and build a PDF from images. Lay out a .docx as a PDF &mdash; headings, lists, tables, pictures, headers and footers &mdash; or print a workbook to PDF with the column widths, merged cells and repeating header row intact. Also the other way: a PDF into an editable Word document, or the tables in a PDF into an Excel spreadsheet |
 | [Spreadsheet Tools](src/app/tools/spreadsheet-tools/page.tsx) | Detects the text encoding and separator, finds the real header row, removes duplicate and blank rows, strips invisible characters, normalises inconsistent date formats, clusters equivalent spellings for review, reports what cleaning cannot fix, shows every changed cell with per-row rescue, and cleans every sheet of a workbook |
 | [Image Tools](src/app/tools/image-tools/page.tsx) | Passport photos: detects the face and the top of the hair, crops to the exact size and head height a document requires (UK, US, Schengen, India, Australia, Canada and the ICAO standards), flags what would get the photo rejected, and lays copies out on a 6 x 4, 7 x 5 or A4 print with cut marks. Also batch compress and resize JPEG, PNG and WebP, or cut the subject out of a photo and save it with a transparent or solid-colour background |
 | [Developer Tools](src/app/tools/developer-tools/page.tsx) | Convert between JSON, CSV and YAML with nesting flattened to dot-notation columns and back; a live Markdown editor exporting to standalone HTML or PDF with themes; diff checker, case converter, whitespace cleaner and Base64 / URL / JWT encoding |

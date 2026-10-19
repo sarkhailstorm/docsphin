@@ -127,11 +127,14 @@ export function FileLine({
   name,
   size,
   pageCount,
+  detail,
   className,
 }: {
   name: string;
   size: number;
-  pageCount: number;
+  pageCount?: number;
+  /** Replaces the page count for files that are not measured in pages. */
+  detail?: string;
   className?: string;
 }) {
   return (
@@ -144,7 +147,7 @@ export function FileLine({
           {name}
         </p>
         <p className="text-[13px] text-muted">
-          {plural(pageCount, 'page')} &middot; {formatBytes(size)}
+          {detail ?? plural(pageCount ?? 0, 'page')} &middot; {formatBytes(size)}
         </p>
       </div>
     </div>
@@ -187,5 +190,42 @@ export function SelectField<T extends string>({
       </select>
       {hint ? <p className="mt-1 text-[12px] text-faint">{hint}</p> : null}
     </div>
+  );
+}
+
+export function Choice({
+  label,
+  hint,
+  checked,
+  disabled = false,
+  onChange,
+}: {
+  label: string;
+  hint?: string;
+  checked: boolean;
+  disabled?: boolean;
+  onChange: (checked: boolean) => void;
+}) {
+  return (
+    <label
+      className={cn(
+        '-mx-2 flex items-start gap-3 rounded-lg px-2 py-2 transition-colors',
+        disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer hover:bg-line/30',
+      )}
+    >
+      <input
+        type="checkbox"
+        checked={checked}
+        disabled={disabled}
+        onChange={(e) => onChange(e.target.checked)}
+        className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-line accent-accent disabled:cursor-not-allowed"
+      />
+      <span className="min-w-0">
+        <span className="block text-[13px] font-medium leading-snug text-ink">{label}</span>
+        {hint ? (
+          <span className="mt-0.5 block text-[12px] leading-relaxed text-faint">{hint}</span>
+        ) : null}
+      </span>
+    </label>
   );
 }
