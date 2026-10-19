@@ -22,7 +22,8 @@ export function Header() {
           <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-accent text-accent-ink">
             <ShieldCheck className="h-4 w-4" aria-hidden />
           </span>
-          <span className="text-[15px]">{site.name}</span>
+          {/* Four controls plus the name overflow a 320px phone, so the shield stands in */}
+          <span className="text-[15px] max-[359px]:hidden">{site.name}</span>
         </Link>
 
         <nav aria-label="Tools" className="ml-4 hidden flex-1 items-center gap-1 lg:flex">
@@ -49,9 +50,7 @@ export function Header() {
           </a>
           <ThemeToggle />
           <InstallButton compact iosHint={false} />
-          <div className="hidden sm:block">
-            <SupportButton size="sm" />
-          </div>
+          <SupportButton size="sm" compact />
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}

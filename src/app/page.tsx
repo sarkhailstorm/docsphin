@@ -12,7 +12,6 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { site, tools } from '@/config';
-import { SupportButton } from '@/components/SupportButton';
 
 const icons: Record<string, LucideIcon> = {
   Table2,
@@ -53,10 +52,6 @@ export default function HomePage() {
         <div className="hero-grid pointer-events-none absolute inset-0" aria-hidden />
         <div className="relative mx-auto max-w-6xl px-4 pb-20 pt-6 sm:px-6 sm:py-28">
           <div className="max-w-2xl">
-            <div className="mb-8 flex justify-center sm:hidden">
-              <SupportButton />
-            </div>
-
             <p className="inline-flex items-center gap-1.5 rounded-full border border-ok/25 bg-ok/10 px-3 py-1 text-[12px] font-medium text-ok">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full rounded-full bg-ok opacity-60" />
