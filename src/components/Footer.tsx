@@ -17,7 +17,7 @@ export function Footer() {
                 These tools are free, and always will be.
               </p>
               <p className="mt-0.5 text-[13px] text-muted">
-                If they saved you some time, you are very welcome to chip in ☕
+                If they saved you some time, you are very welcome to chip in.
               </p>
             </div>
             <SupportButton />

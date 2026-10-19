@@ -2,6 +2,11 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
     {
+      "source": "/support",
+      "destination": "/donate",
+      "permanent": true
+    },
+    {
       "source": "/tools/csv-cleaner",
       "destination": "/tools/spreadsheet-tools",
       "permanent": true

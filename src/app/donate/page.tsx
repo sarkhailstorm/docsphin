@@ -1,17 +1,16 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Heart } from 'lucide-react';
 import { donationsConfigured } from '@/config';
-import { CoffeeIcon } from '@/components/CoffeeIcon';
 import { SupportRoutes } from '@/components/SupportRoutes';
 
 export const metadata: Metadata = {
-  title: 'Support',
+  title: 'Donate',
   description:
-    'Every tool here is free and stays free. If one saved you some time, there are two ways to leave a tip.',
+    'Every tool here is free and stays free. If one saved you some time, there are two ways to make a voluntary contribution.',
 };
 
-export default function SupportPage() {
+export default function DonatePage() {
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-12 sm:px-6 sm:py-16">
       <Link
@@ -23,7 +22,7 @@ export default function SupportPage() {
       </Link>
 
       <span className="mt-8 flex h-11 w-11 items-center justify-center rounded-xl bg-accent-soft text-accent">
-        <CoffeeIcon className="h-5 w-5" />
+        <Heart className="h-5 w-5 fill-current" aria-hidden />
       </span>
 
       <h1 className="mt-4 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
@@ -33,8 +32,8 @@ export default function SupportPage() {
       {donationsConfigured ? (
         <>
           <p className="mt-3 text-[15px] leading-relaxed text-muted">
-            These tools are free, and always will be. A tip is a gift, not a purchase, so pick
-            whichever option suits you and type in any amount.
+            These tools are free, and always will be. A donation is a gift rather than a purchase,
+            so pick whichever option suits you and type in any amount.
           </p>
 
           <SupportRoutes className="mt-7" />
@@ -52,9 +51,9 @@ export default function SupportPage() {
         </>
       ) : (
         <p className="mt-3 text-[15px] leading-relaxed text-muted">
-          There is no way to contribute open at the moment, so there is nothing to do here today.
-          Every tool stays free regardless. The <Link href="/pricing">Pricing page</Link> explains
-          how that works.
+          There is no way to donate open at the moment, so there is nothing to do here today. Every
+          tool stays free regardless. The <Link href="/pricing">Pricing page</Link> explains how
+          that works.
         </p>
       )}
     </div>

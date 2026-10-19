@@ -28,14 +28,13 @@ export type SupportRoute = {
 
 // PayPal first: its merchant terms ask for placement at least equal to any other method
 export const support = {
-  label: 'Buy me a coffee',
-  emoji: '☕',
-  href: '/support',
+  label: 'Donate',
+  href: '/donate',
   routes: [
     {
       id: 'world',
       url: 'https://www.paypal.com/ncp/payment/TAAQ6AS2ELBSJ',
-      title: 'Tip in US dollars',
+      title: 'Donate in US dollars',
       who: 'anywhere outside India',
       provider: 'PayPal',
       providerUrl: 'https://www.paypal.com',
@@ -44,7 +43,7 @@ export const support = {
     {
       id: 'india',
       url: 'https://razorpay.me/@freesecurekit',
-      title: 'Tip in rupees',
+      title: 'Donate in rupees',
       who: 'India',
       provider: 'Razorpay',
       providerUrl: 'https://razorpay.com',

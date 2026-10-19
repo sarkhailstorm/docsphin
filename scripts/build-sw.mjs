@@ -42,6 +42,7 @@ const BUILD_ID = hash.digest('hex').slice(0, 12);
 
 // Kept in step with the redirects in vercel.json, which do not exist offline.
 const REDIRECTS = {
+  '/support/': '/donate/',
   '/tools/csv-cleaner/': '/tools/spreadsheet-tools/',
   '/tools/image-compressor/': '/tools/image-tools/',
   '/tools/background-remover/': '/tools/image-tools/',

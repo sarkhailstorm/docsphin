@@ -9,12 +9,11 @@ import {
   useRef,
   useState,
 } from 'react';
-import { CheckCircle2, AlertTriangle, X, Info } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, Heart, X, Info } from 'lucide-react';
 import Link from 'next/link';
 import { support, donationsConfigured } from '@/config';
 import { cn } from '@/lib/cn';
 import { readSession } from '@/lib/storage';
-import { CoffeeIcon } from './CoffeeIcon';
 
 type ToastKind = 'success' | 'error' | 'info';
 
@@ -147,7 +146,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
         {nudge ? (
           <div className="pointer-events-auto flex items-start gap-3 rounded-xl border border-accent/25 bg-elevated px-3.5 py-3 shadow-lift animate-slide-up">
-            <CoffeeIcon className="mt-0.5 h-4 w-4 text-accent" />
+            <Heart className="mt-0.5 h-4 w-4 shrink-0 fill-current text-accent" aria-hidden />
             <div className="min-w-0 flex-1">
               <p className="text-[13px] font-medium leading-snug text-ink">Glad that helped!</p>
               <Link

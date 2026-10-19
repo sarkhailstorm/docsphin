@@ -191,12 +191,13 @@ key in this repository. `support.routes` holds one entry per route:
 
 ```ts
 export const support = {
-  href: '/support',
+  label: 'Donate',
+  href: '/donate',
   routes: [
     {
       id: 'world',
       url: 'https://www.paypal.com/ncp/payment/XXXX',
-      title: 'Tip in US dollars',
+      title: 'Donate in US dollars',
       who: 'anywhere outside India',
       provider: 'PayPal',
       providerUrl: 'https://www.paypal.com',

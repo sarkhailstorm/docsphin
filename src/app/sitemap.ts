@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { site, tools, legalPages } from '@/config';
+import { site, tools, legalPages, support } from '@/config';
 
 export const dynamic = 'force-static';
 
@@ -11,7 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly' as const,
       priority: 0.8,
     })),
-    { url: `${site.url}/support/`, changeFrequency: 'monthly' as const, priority: 0.5 },
+    { url: `${site.url}${support.href}/`, changeFrequency: 'monthly' as const, priority: 0.5 },
     ...legalPages.map((page) => ({
       url: `${site.url}${page.href}/`,
       changeFrequency: 'yearly' as const,
