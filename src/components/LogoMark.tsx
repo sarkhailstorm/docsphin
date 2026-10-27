@@ -1,0 +1,23 @@
+// Same drawing as brand/docsphin-glyph.svg, which the favicon and app icons are made from
+export function LogoMark({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden
+    >
+      <path
+        d="M20.43 10.76C20.11 10.21 19.62 9.44 19.16 8.99C19.32 8.78 19.7 8.68 19.76 8.33C19.88 7.68 19.82 7.3 19.06 6.68C17.94 5.78 15.98 5.14 14.52 5.02C13.62 3.4 11.87 2.81 9.88 3.01C10.75 4.13 10.99 4.43 11.03 5.54C8.3 6.42 7.67 8.09 6.4 9.93C5.58 10.01 4.17 11.14 3.57 11.64C4.17 11.14 5.38 10.9 5.86 10.98C6.21 11.33 7.01 12.31 7.13 12.8C7.01 12.31 6.73 10.8 6.52 10.01C8.11 8.01 10.65 7.52 12.7 7.25C14.44 7.02 16.1 7.48 17.47 8.18C18.57 8.75 20.19 10.41 20.43 10.76Z"
+        fill="currentColor"
+        strokeWidth={1.25}
+      />
+      <path d="M4 17h16" />
+      <path d="M4 21h9" />
+    </svg>
+  );
+}

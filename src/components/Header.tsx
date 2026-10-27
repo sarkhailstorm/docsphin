@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { Github, Menu, ShieldCheck, X } from 'lucide-react';
+import { Github, Menu, X } from 'lucide-react';
 import { site, tools } from '@/config';
+import { LogoMark } from './LogoMark';
 import { SupportButton } from './SupportButton';
 import { InstallButton } from './InstallButton';
 import { ThemeToggle } from './ThemeToggle';
@@ -20,7 +21,7 @@ export function Header() {
           onClick={() => setOpen(false)}
         >
           <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-accent text-accent-ink">
-            <ShieldCheck className="h-4 w-4" aria-hidden />
+            <LogoMark className="h-5 w-5" />
           </span>
           {/* Install plus Donate plus the name overflow a 320px phone */}
           <span className="text-[15px] max-[359px]:hidden">{site.name}</span>
