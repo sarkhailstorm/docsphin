@@ -4,9 +4,9 @@
 
 **Private file tools that never leave your browser.**
 
-Merge PDFs and reorder their pages, turn a Word file or a spreadsheet into a PDF,
-tidy a messy spreadsheet, and crop a photo to the exact passport size a country
-asks for. Nothing is uploaded.
+Merge, organise and shrink PDFs, add page numbers, a watermark or a password,
+turn a Word file or a spreadsheet into a PDF and back, and tidy a messy
+spreadsheet. Nothing is uploaded.
 
 [Live site](https://freesecurekit.vercel.app) · [Report an issue](https://github.com/sarkhailstorm/docsphin/issues)
 
@@ -18,12 +18,17 @@ asks for. Nothing is uploaded.
 
 ## What this is
 
-Four everyday file and data utilities, in one place, free and without an account:
+Everyday document tools, in one place, free and without an account:
 
 | Tool | What it does |
 | --- | --- |
-| [PDF Tools](src/app/tools/pdf-tools/page.tsx) | Merge PDFs and reorder their pages, extract pages as PDFs or PNG/JPEG images, compress, remove a known password (and the printing and copying restrictions) with qpdf, and build a PDF from images. Lay out a .docx as a PDF &mdash; headings, lists, tables, pictures, headers and footers &mdash; or print a workbook to PDF with the column widths, merged cells and repeating header row intact. Also the other way: a PDF into an editable Word document, or the tables in a PDF into an Excel spreadsheet |
+| [PDF Tools](src/app/tools/pdf-tools/page.tsx) | Merge PDFs and reorder their pages; organise one by rotating, deleting, duplicating and reordering pages or adding blank ones; extract pages as PDFs, or save them as JPG or PNG images; compress, with a quality slider or to fit under a size limit such as 200 KB; add page numbers or a text watermark; add a password (AES-256) or remove a known one (and the printing and copying restrictions) with qpdf; and build a PDF from images. Lay out a .docx as a PDF &mdash; headings, lists, tables, pictures, headers and footers &mdash; or print a workbook to PDF with the column widths, merged cells and repeating header row intact. Also the other way: a PDF into an editable Word document, or the tables in a PDF into an Excel spreadsheet |
 | [Spreadsheet Tools](src/app/tools/spreadsheet-tools/page.tsx) | Detects the text encoding and separator, finds the real header row, removes duplicate and blank rows, strips invisible characters, normalises inconsistent date formats, clusters equivalent spellings for review, reports what cleaning cannot fix, shows every changed cell with per-row rescue, and cleans every sheet of a workbook |
+
+The [Image Tools](src/app/tools/image-tools/page.tsx) and [Developer Tools](src/app/tools/developer-tools/page.tsx) are hidden from the site while Docsphin focuses on documents. Their pages still work at their old links, and the code is unchanged:
+
+| Hidden tool | What it does |
+| --- | --- |
 | [Image Tools](src/app/tools/image-tools/page.tsx) | Passport photos: detects the face and the top of the hair, crops to the exact size and head height a document requires (UK, US, Schengen, India, Australia, Canada and the ICAO standards), flags what would get the photo rejected, and lays copies out on a 6 x 4, 7 x 5 or A4 print with cut marks. Also batch compress and resize JPEG, PNG and WebP, or cut the subject out of a photo and save it with a transparent or solid-colour background |
 | [Developer Tools](src/app/tools/developer-tools/page.tsx) | Convert between JSON, CSV and YAML with nesting flattened to dot-notation columns and back; a live Markdown editor exporting to standalone HTML or PDF with themes; diff checker, case converter, whitespace cleaner and Base64 / URL / JWT encoding |
 
@@ -41,7 +46,7 @@ site but is not an installed app &mdash; Brave does this deliberately, because a
 Android means fetching a package from Google. Others, Firefox on the desktop among them, offer
 nothing at all. On an iPhone it is Share, then Add to Home Screen.
 
-The models and the PDF unlocker are not part of that 7 MB &mdash; they are fetched the first time
+The models and qpdf are not part of that 7 MB &mdash; they are fetched the first time
 you use the tool that needs them, and kept from then on, so a tool you have used online once works
 offline afterwards and one you never have does not.
 
@@ -146,7 +151,7 @@ users supply. The vendor CDN serves the current, patched release.
 `scripts/copy-pdf-worker.mjs`, so it is served from this site's own origin instead of a CDN. That
 keeps the no-third-party-requests promise intact and lets the PDF tools work offline.
 
-### Models and the PDF unlocker
+### Models and qpdf
 
 Two tools need files that are far too big to put in a JavaScript bundle: the models in
 `public/models/`, the browser runtime that runs them in `public/ort/`, and qpdf in
@@ -157,7 +162,7 @@ Two tools need files that are far too big to put in a JavaScript bundle: the mod
 | `modnet-*.onnx` | Cut-outs of people, and the top of the head for passport photos | Apache-2.0 |
 | `u2netp-*.onnx` | Cut-outs of anything that is not a person | Apache-2.0 |
 | `yunet-*.onnx` | Finding the face and the eyes, for passport photos | MIT |
-| `qpdf-*.wasm` | Taking a known password off a PDF | Apache-2.0 |
+| `qpdf-*.wasm` | Putting a password on a PDF, or taking a known one off | Apache-2.0 |
 
 The ONNX runtime and qpdf are copied out of `node_modules` by `scripts/copy-onnx-runtime.mjs` and
 `scripts/copy-qpdf.mjs`, exactly as the pdf.js worker is, and are not committed. The models **are**
@@ -169,7 +174,7 @@ checks the byte count and SHA-256 of each; `scripts/copy-qpdf.mjs` checks qpdf's
 None of it is fetched when the site loads, and the downloads are shared: `src/lib/assets.ts` holds
 one Cache Storage entry per file, so a visitor who has already cut a person out of a photo pays
 only for the 232 KB face detector when they make a passport photo, and qpdf is fetched only by
-someone who actually unlocks a PDF.
+someone who actually protects or unlocks a PDF.
 
 ## Deploying
 
@@ -217,7 +222,8 @@ is a change in this one file. Empty the array and every donation link hides itse
 pointing at a dead page.
 
 The same file holds the site name, URL, repository link and the tool registry that drives the
-landing page and navigation.
+landing page and navigation. Set `hidden: true` on a tool to drop it from every listing, the
+sitemap included, while its page keeps working for anyone with the old link.
 
 ## Support
 

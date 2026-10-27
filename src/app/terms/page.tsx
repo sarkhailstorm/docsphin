@@ -6,7 +6,6 @@ import {
   site,
   sourceUrl,
   support,
-  tools,
   traderName,
 } from '@/config';
 
@@ -17,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <LegalPage id="terms" updated="5 October 2026">
+    <LegalPage id="terms" updated="27 October 2026">
       <h2>Who runs this site</h2>
       <p>
         Docsphin is run by {traderName()}, an individual, from{' '}
@@ -31,10 +30,12 @@ export default function Page() {
 
       <h2>What Docsphin is</h2>
       <p>
-        Docsphin is a set of {tools.length} tools for everyday file jobs: PDFs, spreadsheets,
-        images, data formats, Markdown and text. The tools run inside your own web browser on your
-        own device. There is no server that processes your files, because the site is a set of
-        static files with no application code running behind it.
+        Docsphin is a set of free tools for everyday document jobs: PDFs, Word files and
+        spreadsheets. Image Tools and Developer Tools &mdash; the earlier tools for photos, data
+        formats, Markdown and text &mdash; are no longer listed but still work at their old
+        addresses, and these terms cover them too. The tools run inside your own web browser on
+        your own device. There is no server that processes your files, because the site is a set
+        of static files with no application code running behind it.
       </p>
       <p>
         Everything is free. There is no account, no sign-up, no subscription, no trial and no paid

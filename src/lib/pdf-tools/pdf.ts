@@ -54,7 +54,13 @@ export async function readPdf(file: File): Promise<LoadedPdf> {
   const bytes = new Uint8Array(await file.arrayBuffer());
   // No `ignoreEncryption`: without it pdf-lib throws for a password-protected file, which is what we want here.
   const doc = await PDFDocument.load(bytes.slice(), { updateMetadata: false });
-  const pageCount = doc.getPageCount();
+  let pageCount: number;
+  try {
+    pageCount = doc.getPageCount();
+  } catch {
+    // pdf-lib accepts a PDF header with no readable catalog behind it, then fails here
+    throw new Error('Invalid PDF: there is no page tree to read');
+  }
   if (pageCount === 0) {
     throw new PdfToolsError(
       `“${file.name}” opened, but it contains no pages at all.`,
@@ -238,9 +244,20 @@ export async function zipFiles(
     zip.file(name, file.bytes);
   }
 
-  return zip.generateAsync({ type: 'blob', compression: 'STORE' }, (meta) => {
-    onProgress(Math.round(meta.percent), 100);
+  // Kept as parts: generateAsync would first copy the whole archive into one array.
+  const parts: Uint8Array[] = [];
+  await new Promise<void>((resolve, reject) => {
+    zip
+      .generateInternalStream({ type: 'uint8array', compression: 'STORE' })
+      .on('data', (chunk, meta) => {
+        parts.push(chunk);
+        onProgress(Math.round(meta.percent), 100);
+      })
+      .on('error', reject)
+      .on('end', () => resolve())
+      .resume();
   });
+  return new Blob(parts, { type: 'application/zip' });
 }
 
 export type CompressStage = 'reading' | 'images' | 'saving';
@@ -249,6 +266,11 @@ export interface CompressProgress {
   stage: CompressStage;
   done: number;
   total: number;
+}
+
+export interface CompressOptions {
+  /** Longest side, in pixels, a re-encoded JPEG may keep. It still fills the same space on the page. */
+  maxEdge?: number;
 }
 
 export interface CompressReport {
@@ -263,16 +285,27 @@ export interface CompressReport {
   imagesFound: number;
   jpegImages: number;
   imagesRewritten: number;
+  /** Rewritten images that were also scaled down to `maxEdge`. */
+  imagesResized: number;
   imageBytesBefore: number;
   imageBytesAfter: number;
+  /** Re-encodable JPEG data in the rebuilt file. */
+  jpegBytes: number;
+  /** Image data this can never re-encode: masks, other formats, print or spot colours, and tiny JPEGs. */
+  otherImageBytes: number;
 }
 
 const CARRY_OVER = ['SMask', 'Mask', 'Intent', 'Interpolate', 'OC', 'StructParent'];
+
+/** Grey and RGB survive a canvas round trip; CMYK, spot colours, palettes and Lab come back as the wrong colours. */
+const CANVAS_COLOUR_SPACES = new Set(['DeviceGray', 'DeviceRGB', 'CalGray', 'CalRGB', 'G', 'RGB']);
 
 /** Below this an image is not worth the round trip through a canvas. */
 const MIN_IMAGE_BYTES = 4 * 1024;
 /** Only swap an image in when the new one is a real improvement. */
 const MIN_IMAGE_GAIN = 0.97;
+/** iOS caps a canvas at this many pixels and hands back a blank one rather than throwing. */
+export const MAX_CANVAS_PIXELS = 16_777_216;
 
 function nameOf(obj: PdfObject | undefined): string | null {
   // PDFName#asString() includes the leading slash: "/DCTDecode".
@@ -282,14 +315,15 @@ function nameOf(obj: PdfObject | undefined): string | null {
   return typeof value === 'string' && value.startsWith('/') ? value.slice(1) : null;
 }
 
-/** Re-encodes plain JPEGs and takes the free structural wins; every other image is left alone. */
+/** Re-encodes plain JPEGs and takes the free structural wins; every other image is left alone, and all of them when quality is null. */
 export async function compressPdf(
   source: LoadedPdf,
-  quality: number,
+  quality: number | null,
   onProgress: (progress: CompressProgress) => void,
+  options: CompressOptions = {},
 ): Promise<CompressReport> {
   const lib = await import('pdf-lib');
-  const { PDFDocument, PDFName, PDFNumber, PDFDict, PDFArray, PDFRawStream, PDFBool } = lib;
+  const { PDFDocument, PDFName, PDFNumber, PDFDict, PDFArray, PDFRawStream, PDFBool, PDFRef } = lib;
 
   onProgress({ stage: 'reading', done: 0, total: 0 });
   await tick();
@@ -309,14 +343,44 @@ export async function compressPdf(
   const resolve = (dict: PdfDict, key: string): PdfObject | undefined =>
     ctx.lookup(dict.get(PDFName.of(key)));
 
-  const candidates: { ref: PdfRef; stream: PdfRawStream }[] = [];
-  let imagesFound = 0;
+  const keepsColour = (dict: PdfDict): boolean => {
+    const space = resolve(dict, 'ColorSpace');
+    const family = space instanceof PDFArray ? nameOf(ctx.lookup(space.get(0))) : nameOf(space);
+    if (family && CANVAS_COLOUR_SPACES.has(family)) return true;
+    if (family !== 'ICCBased' || !(space instanceof PDFArray)) return false;
+    const profile = ctx.lookup(space.get(1));
+    const channels = profile instanceof PDFRawStream ? resolve(profile.dict, 'N') : undefined;
+    return channels instanceof PDFNumber && [1, 3].includes(channels.asNumber());
+  };
+
+  // With ColorTransform 0 a PDF reader shows the samples as stored, where a browser converts them from YCbCr.
+  const untransformed = (dict: PdfDict): boolean => {
+    const parms = resolve(dict, 'DecodeParms');
+    const first = parms instanceof PDFArray ? ctx.lookup(parms.get(0)) : parms;
+    const transform = first instanceof PDFDict ? resolve(first, 'ColorTransform') : undefined;
+    return transform instanceof PDFNumber && transform.asNumber() === 0;
+  };
+
+  const images: { ref: PdfRef; stream: PdfRawStream }[] = [];
+  const masks = new Set<string>();
 
   for (const [ref, obj] of ctx.enumerateIndirectObjects()) {
     if (!(obj instanceof PDFRawStream)) continue;
+    if (nameOf(resolve(obj.dict, 'Subtype')) !== 'Image') continue;
+    images.push({ ref, stream: obj });
+    for (const key of ['SMask', 'Mask']) {
+      const mask = obj.dict.get(PDFName.of(key));
+      if (mask instanceof PDFRef) masks.add(mask.tag);
+    }
+  }
+
+  const candidates: { ref: PdfRef; stream: PdfRawStream; resizable: boolean }[] = [];
+  const imagesFound = images.length;
+
+  for (const { ref, stream: obj } of images) {
     const dict = obj.dict;
-    if (nameOf(resolve(dict, 'Subtype')) !== 'Image') continue;
-    imagesFound++;
+    // A mask has to stay greyscale, and a canvas only hands back RGB.
+    if (masks.has(ref.tag)) continue;
 
     // A stencil mask or an inverting Decode array would be silently corrupted by a canvas round trip.
     const imageMask = resolve(dict, 'ImageMask');
@@ -332,48 +396,56 @@ export async function compressPdf(
       isJpeg = names.length === 1 && names[0] === 'DCTDecode';
     }
     if (!isJpeg) continue;
+    if (!keepsColour(dict) || untransformed(dict)) continue;
     if (obj.getContentsSize() < MIN_IMAGE_BYTES) continue;
 
-    candidates.push({ ref, stream: obj });
+    const softMask = resolve(dict, 'SMask');
+    // Pre-blended (Matte) colours are worked out pixel for pixel against the mask, so keep the sizes matched.
+    const resizable = !(softMask instanceof PDFRawStream && softMask.dict.has(PDFName.of('Matte')));
+    candidates.push({ ref, stream: obj, resizable });
   }
 
   const jpegImages = candidates.length;
   let imagesRewritten = 0;
+  let imagesResized = 0;
   let imageBytesBefore = 0;
   let imageBytesAfter = 0;
 
-  onProgress({ stage: 'images', done: 0, total: jpegImages });
+  if (quality !== null) {
+    onProgress({ stage: 'images', done: 0, total: jpegImages });
 
-  for (let i = 0; i < candidates.length; i++) {
-    const { ref, stream } = candidates[i];
-    const before = stream.getContents();
+    for (let i = 0; i < candidates.length; i++) {
+      const { ref, stream, resizable } = candidates[i];
+      const before = stream.getContents();
 
-    try {
-      const reencoded = await reencodeJpeg(before, quality);
-      if (reencoded && reencoded.byteLength < before.byteLength * MIN_IMAGE_GAIN) {
-        const dict = PDFDict.withContext(ctx);
-        dict.set(PDFName.of('Type'), PDFName.of('XObject'));
-        dict.set(PDFName.of('Subtype'), PDFName.of('Image'));
-        dict.set(PDFName.of('Width'), PDFNumber.of(reencoded.width));
-        dict.set(PDFName.of('Height'), PDFNumber.of(reencoded.height));
-        // A canvas always hands back 8-bit RGB, whatever went in.
-        dict.set(PDFName.of('ColorSpace'), PDFName.of('DeviceRGB'));
-        dict.set(PDFName.of('BitsPerComponent'), PDFNumber.of(8));
-        dict.set(PDFName.of('Filter'), PDFName.of('DCTDecode'));
-        for (const key of CARRY_OVER) {
-          const value = stream.dict.get(PDFName.of(key));
-          if (value) dict.set(PDFName.of(key), value);
+      try {
+        const reencoded = await reencodeJpeg(before, quality, resizable ? options.maxEdge : undefined);
+        if (reencoded && reencoded.byteLength < before.byteLength * MIN_IMAGE_GAIN) {
+          const dict = PDFDict.withContext(ctx);
+          dict.set(PDFName.of('Type'), PDFName.of('XObject'));
+          dict.set(PDFName.of('Subtype'), PDFName.of('Image'));
+          dict.set(PDFName.of('Width'), PDFNumber.of(reencoded.width));
+          dict.set(PDFName.of('Height'), PDFNumber.of(reencoded.height));
+          // A canvas always hands back 8-bit RGB, whatever went in.
+          dict.set(PDFName.of('ColorSpace'), PDFName.of('DeviceRGB'));
+          dict.set(PDFName.of('BitsPerComponent'), PDFNumber.of(8));
+          dict.set(PDFName.of('Filter'), PDFName.of('DCTDecode'));
+          for (const key of CARRY_OVER) {
+            const value = stream.dict.get(PDFName.of(key));
+            if (value) dict.set(PDFName.of(key), value);
+          }
+          ctx.assign(ref, PDFRawStream.of(dict, reencoded.bytes));
+          imagesRewritten++;
+          if (reencoded.resized) imagesResized++;
+          imageBytesBefore += before.byteLength;
+          imageBytesAfter += reencoded.byteLength;
         }
-        ctx.assign(ref, PDFRawStream.of(dict, reencoded.bytes));
-        imagesRewritten++;
-        imageBytesBefore += before.byteLength;
-        imageBytesAfter += reencoded.byteLength;
+      } catch {
+        // An image the browser cannot decode just stays as it was; never fatal.
       }
-    } catch {
-      // An image the browser cannot decode just stays as it was; never fatal.
-    }
 
-    onProgress({ stage: 'images', done: i + 1, total: jpegImages });
+      onProgress({ stage: 'images', done: i + 1, total: jpegImages });
+    }
   }
 
   onProgress({ stage: 'saving', done: 0, total: 0 });
@@ -381,6 +453,16 @@ export async function compressPdf(
 
   // pdf-lib would otherwise write the objects we just unlinked straight back out.
   dropUnreachableObjects(ctx, lib);
+
+  const editable = new Set(candidates.map(({ ref }) => ref.tag));
+  let jpegBytes = 0;
+  let otherImageBytes = 0;
+  for (const { ref } of images) {
+    const live = ctx.lookup(ref);
+    if (!(live instanceof PDFRawStream)) continue;
+    if (editable.has(ref.tag)) jpegBytes += live.getContentsSize();
+    else otherImageBytes += live.getContentsSize();
+  }
 
   const rebuilt = await doc.save({ useObjectStreams: true, addDefaultPage: false });
   const rebuiltSize = rebuilt.byteLength;
@@ -395,8 +477,11 @@ export async function compressPdf(
     imagesFound,
     jpegImages,
     imagesRewritten,
+    imagesResized,
     imageBytesBefore,
     imageBytesAfter,
+    jpegBytes,
+    otherImageBytes,
   };
 }
 
@@ -456,42 +541,115 @@ interface Reencoded {
   byteLength: number;
   width: number;
   height: number;
+  resized: boolean;
 }
 
-async function reencodeJpeg(jpeg: Uint8Array, quality: number): Promise<Reencoded | null> {
+async function reencodeJpeg(
+  jpeg: Uint8Array,
+  quality: number,
+  maxEdge?: number,
+): Promise<Reencoded | null> {
   // A PDF positions an image itself, so honouring an EXIF orientation tag here would rotate it.
   const bitmap = await createImageBitmap(new Blob([jpeg], { type: 'image/jpeg' }), {
     imageOrientation: 'none',
   });
-  const width = bitmap.width;
-  const height = bitmap.height;
 
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  const context = canvas.getContext('2d');
-  if (!context) {
+  try {
+    const longest = Math.max(bitmap.width, bitmap.height);
+    const scale = maxEdge && longest > maxEdge ? maxEdge / longest : 1;
+    const width = Math.max(1, Math.round(bitmap.width * scale));
+    const height = Math.max(1, Math.round(bitmap.height * scale));
+
+    const bytes = await encodeJpeg(bitmap, width, height, quality);
+    if (!bytes) return null;
+    return { bytes, byteLength: bytes.byteLength, width, height, resized: scale < 1 };
+  } finally {
     bitmap.close();
-    return null;
+  }
+}
+
+/** Paints the bitmap onto white at the given size, closing it once drawn, and saves a JPEG; null if the browser declines. */
+export async function encodeJpeg(
+  bitmap: ImageBitmap,
+  width: number,
+  height: number,
+  quality: number,
+): Promise<Uint8Array | null> {
+  const canvas = document.createElement('canvas');
+  let blob: Blob | null = null;
+
+  try {
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext('2d');
+    if (!context) return null;
+
+    // JPEG has no alpha; painting white first keeps any transparency sane.
+    context.fillStyle = '#ffffff';
+    context.fillRect(0, 0, width, height);
+    if (width === bitmap.width && height === bitmap.height) {
+      context.drawImage(bitmap, 0, 0);
+    } else {
+      drawReduced(context, bitmap, width, height);
+    }
+    bitmap.close();
+
+    blob = await new Promise<Blob | null>((res) => {
+      canvas.toBlob(res, 'image/jpeg', quality);
+    });
+  } finally {
+    // Release the backing store straight away; scanned pages are enormous.
+    canvas.width = 0;
+    canvas.height = 0;
   }
 
-  // JPEG has no alpha; painting white first keeps any transparency sane.
-  context.fillStyle = '#ffffff';
-  context.fillRect(0, 0, width, height);
-  context.drawImage(bitmap, 0, 0);
-  bitmap.close();
+  return blob ? new Uint8Array(await blob.arrayBuffer()) : null;
+}
 
-  const blob = await new Promise<Blob | null>((res) => {
-    canvas.toBlob(res, 'image/jpeg', quality);
-  });
+/** Halves towards the target first: one big step aliases in browsers that only smooth bilinearly. */
+function drawReduced(
+  context: CanvasRenderingContext2D,
+  bitmap: ImageBitmap,
+  width: number,
+  height: number,
+): void {
+  const steps: { width: number; height: number }[] = [];
+  for (
+    let w = width * 2, h = height * 2;
+    w < bitmap.width && h < bitmap.height && w * h <= MAX_CANVAS_PIXELS;
+    w *= 2, h *= 2
+  ) {
+    steps.unshift({ width: w, height: h });
+  }
 
-  // Release the backing store straight away; scanned pages are enormous.
-  canvas.width = 0;
-  canvas.height = 0;
+  let source: CanvasImageSource = bitmap;
+  let previous: HTMLCanvasElement | null = null;
+  for (const step of steps) {
+    const canvas = document.createElement('canvas');
+    canvas.width = step.width;
+    canvas.height = step.height;
+    const stepContext = canvas.getContext('2d');
+    if (!stepContext) {
+      canvas.width = 0;
+      canvas.height = 0;
+      break;
+    }
+    stepContext.imageSmoothingQuality = 'high';
+    stepContext.drawImage(source, 0, 0, step.width, step.height);
+    if (previous) {
+      previous.width = 0;
+      previous.height = 0;
+    }
+    previous = canvas;
+    source = canvas;
+  }
 
-  if (!blob) return null;
-  const bytes = new Uint8Array(await blob.arrayBuffer());
-  return { bytes, byteLength: bytes.byteLength, width, height };
+  context.imageSmoothingQuality = 'high';
+  context.drawImage(source, 0, 0, width, height);
+  if (previous) {
+    previous.width = 0;
+    previous.height = 0;
+  }
 }
 
 export function summariseCompression(report: CompressReport): {
@@ -535,8 +693,8 @@ export function summariseCompression(report: CompressReport): {
   if (report.jpegImages === 0) {
     return {
       tone: 'flat',
-      headline: 'The images in this PDF aren’t in a format we can re-encode.',
-      detail: `Found ${report.imagesFound} ${report.imagesFound === 1 ? 'image' : 'images'}, but none are stored as plain JPEG. Re-encoding the other formats in the browser would risk corrupting them, so they were left alone.`,
+      headline: 'The images in this PDF were left alone.',
+      detail: `Found ${report.imagesFound} ${report.imagesFound === 1 ? 'image' : 'images'}, but ${report.imagesFound === 1 ? 'it is' : 'each is'} either stored in a way a browser can’t safely re-encode or too small to be worth it.`,
     };
   }
 

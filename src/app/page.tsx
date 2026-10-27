@@ -66,8 +66,8 @@ export default function HomePage() {
             </h1>
 
             <p className="mt-5 max-w-xl text-base leading-relaxed text-muted">
-              Join PDFs and drag the pages into order. Tidy a messy spreadsheet. Then turn a phone
-              snap into a passport photo at the right size. All free.
+              Join PDFs and put the pages in order. Shrink one to fit an upload limit, or lock it
+              with a password. Tidy a messy spreadsheet. All free.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">

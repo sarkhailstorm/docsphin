@@ -53,10 +53,13 @@ CI runs the same three. Lint runs with `--max-warnings 0`, so warnings fail.
 
 ## Adding a tool
 
-Tools live as a tab inside one of the four existing cards rather than as a new
-card. Add the panel under `src/components/tools/<card>/`, the logic under
-`src/lib/`, and wire it into that card's page. If you think something warrants a
-new card, open an issue first.
+Tools live as a tab inside one of the listed cards, PDF Tools or Spreadsheet
+Tools, rather than as a new card. Image Tools and Developer Tools are hidden
+with `hidden: true` in [`config.ts`](config.ts): their pages still work for old
+links, but nothing on the site leads to them. Add the panel under
+`src/components/tools/<card>/`, the logic under `src/lib/`, and wire it into
+that card's page. If you think something warrants a new card, open an issue
+first.
 
 ## Things worth knowing
 

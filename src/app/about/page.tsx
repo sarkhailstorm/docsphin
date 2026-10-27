@@ -21,11 +21,11 @@ export default function AboutPage() {
   const [world, india] = support.routes;
 
   return (
-    <LegalPage id="about" updated="5 October 2026">
+    <LegalPage id="about" updated="27 October 2026">
       <h2>What Docsphin is</h2>
       <p>
-        Docsphin is software: a web application that gives you {tools.length} free tools for everyday file
-        work &mdash; PDFs, spreadsheets, images, structured data, Markdown and plain text. There is
+        Docsphin is software: a web application that gives you free tools for everyday document
+        work &mdash; PDFs, Word files and spreadsheets. There is
         nothing to install and nothing to sign up for. You open a page, drop in a file, and get the
         result back.
       </p>

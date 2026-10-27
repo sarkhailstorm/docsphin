@@ -2,7 +2,7 @@ export const site = {
   name: 'Docsphin',
   tagline: 'Tools that never upload your files',
   description:
-    'Open-source tools for spreadsheets, images, PDFs and text, free to use. Everything runs in your browser — your files are never uploaded.',
+    'Open-source tools for PDFs, Word files and spreadsheets, free to use. Everything runs in your browser — your files are never uploaded.',
   url: 'https://freesecurekit.vercel.app',
   repo: 'https://github.com/sarkhailstorm/docsphin',
   repoBranch: 'main',
@@ -139,25 +139,27 @@ export type Tool = {
   icon: string;
   source: string;
   tags: readonly string[];
+  /** Left out of every listing; the page still works for old links. */
+  hidden?: boolean;
 };
 
-export const tools: readonly Tool[] = [
+export const allTools: readonly Tool[] = [
   {
     id: 'pdf-tools',
     name: 'PDF Tools',
     href: '/tools/pdf-tools',
-    blurb: 'Combine, split and shrink PDFs, unlock one, and swap between PDF, Word and Excel.',
+    blurb: 'Merge, split, organise and shrink PDFs, add page numbers, a watermark or a password, and swap between PDF, Word, Excel and JPG.',
     description:
-      'Join PDFs and drag their pages into any order, pull out the pages you need as PDFs or pictures, shrink a file that is too big to email, take the password off a locked bank statement, and turn photos into a PDF. Turn a Word file or a spreadsheet into a PDF anyone can open, or go the other way and get an editable Word file or a spreadsheet back out of a PDF.',
+      'Join PDFs, put their pages in any order, turn pages the right way up and drop the ones you do not need. Shrink a file to fit an upload limit, number the pages, stamp a watermark across them, lock a PDF with a password or take one off a bank statement. Turn photos into a PDF or pages into JPGs, and swap between PDF, Word and Excel.',
     icon: 'FileStack',
     source: 'src/app/tools/pdf-tools/page.tsx',
     tags: [
-      'Merge & reorder',
-      'Extract pages',
-      'Unlock a locked PDF',
-      'Word & Excel to PDF',
-      'PDF to Word',
-      'PDF to Excel',
+      'Merge & organise',
+      'Compress to a size',
+      'Page numbers & watermarks',
+      'Protect & unlock',
+      'PDF to JPG',
+      'Word & Excel to PDF and back',
     ],
   },
   {
@@ -180,6 +182,7 @@ export const tools: readonly Tool[] = [
       'Turn a photo from your phone into a passport photo at the exact size your country asks for, and hear what would get it turned down before you send it. Make photos smaller without a visible drop in quality — one or a whole folder. Or cut the subject out of a photo and get it back on a see-through background.',
     icon: 'ImageDown',
     source: 'src/app/tools/image-tools/page.tsx',
+    hidden: true,
     tags: ['Passport photos', 'Whole folders at once', 'Remove background', '6 × 4 print sheet'],
   },
   {
@@ -191,12 +194,15 @@ export const tools: readonly Tool[] = [
       'Convert between JSON, CSV and YAML with nesting handled for you. Write Markdown and save it as a page or PDF. Compare two versions of some text, change its case, clean up its spacing, and encode or decode Base64, URLs and JWTs.',
     icon: 'Code2',
     source: 'src/app/tools/developer-tools/page.tsx',
+    hidden: true,
     tags: ['JSON, CSV & YAML', 'Markdown to PDF', 'Diff & case', 'Base64 & JWT'],
   },
 ] as const;
 
+export const tools = allTools.filter((tool) => !tool.hidden);
+
 export function getTool(id: ToolId): Tool {
-  const tool = tools.find((t) => t.id === id);
+  const tool = allTools.find((t) => t.id === id);
   if (!tool) throw new Error(`Unknown tool: ${id}`);
   return tool;
 }

@@ -114,7 +114,11 @@ export function useThumbnails(source: LoadedPdf | null): Thumbnails {
       try {
         const pdfjs = await import('pdfjs-dist');
         pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-        const doc = await pdfjs.getDocument({ data: source.bytes.slice() }).promise;
+        const task = pdfjs.getDocument({ data: source.bytes.slice() });
+        const doc = await task.promise.catch((err: unknown) => {
+          void task.destroy().catch(() => undefined);
+          throw err;
+        });
 
         if (mine !== generation.current) {
           void doc.destroy().catch(() => undefined);

@@ -8,7 +8,7 @@ models, and one command-line tool compiled to WebAssembly.
 | MODNet | Cuts a person out of a photo | Apache-2.0 |
 | U²-Net (u2netp) | Cuts anything else out of a photo | Apache-2.0 |
 | YuNet | Finds a face, for passport photos | MIT |
-| qpdf | Takes the password off a PDF | Apache-2.0 |
+| qpdf | Puts a password on a PDF, or takes one off | Apache-2.0 |
 
 None of the upstream projects distributes a `NOTICE` file, so clause 4(d) of the
 Apache licence does not apply to any of them.
@@ -69,7 +69,7 @@ The MIT licence requires the copyright notice to travel with the file. The
 [upstream licence](https://github.com/opencv/opencv_zoo/blob/main/models/face_detection_yunet/LICENSE)
 is reproduced by this entry and its link.
 
-## qpdf (taking the password off a PDF)
+## qpdf (PDF passwords)
 
 | | |
 | --- | --- |
@@ -87,10 +87,19 @@ qpdf is a command-line tool for transforming PDFs, compiled to WebAssembly by th
 copied out of `node_modules` unmodified by `scripts/copy-qpdf.mjs`, which refuses
 to write a file whose SHA-256 does not match the one above.
 
-It is used for one job: `qpdf --decrypt --password=... in.pdf out.pdf`, run in the
-browser, so a password-protected bank statement is opened on the device that owns
-it rather than uploaded somewhere. The password is passed to qpdf inside the tab
-and is never stored or sent.
+It is used for two jobs, both run in the browser, so a PDF is opened on the device
+that owns it rather than uploaded somewhere:
+
+- `qpdf --decrypt --password=... in.pdf out.pdf` takes a known password, or the
+  printing and copying restrictions, off a PDF such as a bank statement.
+- `qpdf --job-json-file=job.json` puts an open password on a PDF with AES-256. The
+  passwords go in through that job file, which exists only in qpdf's in-memory file
+  system, because `--encrypt` would read a bare password as an option or an `@file`.
+  The result is then checked with `qpdf --requires-password --password=... in.pdf`,
+  where `=` ties the password to its option. Either way, a password that starts
+  with `-` or `@` is never read as an option or an `@file`.
+
+Passwords are passed to qpdf inside the tab and are never stored or sent.
 
 qpdf releases before version 11 were under the Artistic Licence 2.0. The version
 packaged here is Apache-2.0, matching the project's current licence.

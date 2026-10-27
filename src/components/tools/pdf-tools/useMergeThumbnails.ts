@@ -82,7 +82,11 @@ export function useMergeThumbnails(
       try {
         const pdfjs = await import('pdfjs-dist');
         pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-        const doc = await pdfjs.getDocument({ data: file.bytes.slice() }).promise;
+        const task = pdfjs.getDocument({ data: file.bytes.slice() });
+        const doc = await task.promise.catch((err: unknown) => {
+          void task.destroy().catch(() => undefined);
+          throw err;
+        });
 
         if (!files.current.has(fileId)) {
           void doc.destroy().catch(() => undefined);

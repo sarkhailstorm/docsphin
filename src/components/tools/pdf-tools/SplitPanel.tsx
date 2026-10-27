@@ -151,7 +151,7 @@ export function SplitPanel() {
 
   const outputPages = groups.reduce((sum, group) => sum + group.length, 0);
   const asImages = mode === 'extract' && output === 'images';
-  const imageLabel = exportOptions.format === 'jpeg' ? 'JPEG' : 'PNG';
+  const imageLabel = exportOptions.format === 'jpeg' ? 'JPG' : 'PNG';
 
   const resetChoices = useCallback(() => {
     setSelected(new Set<number>());
@@ -563,7 +563,7 @@ export function SplitPanel() {
                   {output === 'images' ? (
                     <div className="mt-3 grid gap-3 sm:grid-cols-2">
                       <SelectField
-                        label="Picture format"
+                        label="Format"
                         value={exportOptions.format}
                         options={FORMAT_OPTIONS}
                         onChange={(format) => {
@@ -572,7 +572,7 @@ export function SplitPanel() {
                         }}
                       />
                       <SelectField
-                        label="Detail"
+                        label="Quality"
                         value={exportOptions.quality}
                         options={QUALITY_OPTIONS}
                         onChange={(quality) => {

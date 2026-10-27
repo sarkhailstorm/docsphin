@@ -22,4 +22,4 @@ body:
       label: Worth checking
       options:
         - label: This can work entirely in the browser, with nothing uploaded
-        - label: This fits inside one of the four existing tool cards
+        - label: This fits inside PDF Tools or Spreadsheet Tools

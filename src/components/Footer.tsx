@@ -28,7 +28,7 @@ export function Footer() {
           <div className="lg:col-span-2">
             <p className="text-sm font-semibold tracking-tight text-ink">{site.name}</p>
             <p className="mt-1.5 max-w-sm text-[13px] leading-relaxed text-muted">
-              Free tools for spreadsheets, images, PDFs and text. Nothing to sign up for, nothing uploaded.
+              Free tools for PDFs, Word files and spreadsheets. Nothing to sign up for, nothing uploaded.
             </p>
             <p className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-ok/25 bg-ok/10 px-2.5 py-1.5 text-[12px] font-medium text-ok">
               <Lock className="h-3.5 w-3.5" aria-hidden />

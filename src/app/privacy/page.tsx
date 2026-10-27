@@ -12,7 +12,7 @@ export default function Page() {
   const [world, india] = support.routes;
 
   return (
-    <LegalPage id="privacy" updated="5 October 2026">
+    <LegalPage id="privacy" updated="27 October 2026">
       <h2>The short version</h2>
       <ul>
         <li>Your files are processed inside your browser. They are never uploaded to us.</li>
@@ -28,12 +28,17 @@ export default function Page() {
           Our host, Vercel, logs every request for the pages themselves &mdash; as every website
           host does.
         </li>
+        <li>
+          Image Tools and Developer Tools &mdash; the earlier tools for photos, data formats,
+          Markdown and text &mdash; are no longer listed but still work at their old addresses,
+          and this page covers them too.
+        </li>
       </ul>
 
       <h2>What happens to your files</h2>
       <p>
         When you drop a file onto a tool, your browser reads it from your disk and hands it to the
-        page. The work &mdash; merging a PDF, cleaning a spreadsheet, shrinking a photo &mdash;
+        page. The work &mdash; merging a PDF, cleaning a spreadsheet, locking a file with a password &mdash;
         happens in that tab, using code that was downloaded to your device. The finished file is
         built in memory and passed to your browser&rsquo;s own download. There is nowhere to send a
         file to, because there is no server: the site is a set of static files.
@@ -91,10 +96,11 @@ export default function Page() {
             <td>Downloaded tool files</td>
             <td>docsphin-assets-v1 (Cache Storage)</td>
             <td>
-              The model and engine files the Background Remover, Passport Photo and PDF unlock
-              tools need, kept so they are not fetched again. About 27 MB if you use all of them.
+              The model and engine files used by the Background Remover and Passport Photo, and
+              by the PDF Protect and Unlock tabs, kept so they are not fetched again. About 27 MB
+              if you use all of them.
             </td>
-            <td>Until you remove them in the tool, or clear this site&rsquo;s data</td>
+            <td>Until you clear this site&rsquo;s data</td>
           </tr>
           <tr>
             <td>A copy of the site</td>
@@ -121,11 +127,7 @@ export default function Page() {
         on{donationsConfigured ? '' : ', which it is not at the moment'}. To remove all six, clear
         this site&rsquo;s data in your browser settings.
       </p>
-      <p>
-        Both caches hold our code rather than anything of yours. Once the Background Remover
-        has downloaded the tool files it shows a link to remove them from this browser, which
-        clears them for every tool that shares them.
-      </p>
+      <p>Both caches hold our code rather than anything of yours.</p>
 
       <h3>Working without an internet connection, in plain terms</h3>
       <p>
