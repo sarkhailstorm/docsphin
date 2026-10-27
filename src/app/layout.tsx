@@ -73,6 +73,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen antialiased">
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}
         <script src="/theme.js" />
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script src="/install.js" />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-accent focus:px-3 focus:py-2 focus:text-sm focus:text-accent-ink"

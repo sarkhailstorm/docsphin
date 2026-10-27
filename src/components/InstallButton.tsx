@@ -10,6 +10,13 @@ type InstallPromptEvent = Event & {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 };
 
+declare global {
+  interface Window {
+    // Set by public/install.js
+    __installPrompt?: InstallPromptEvent | null;
+  }
+}
+
 function isStandalone(): boolean {
   try {
     return (
@@ -51,19 +58,10 @@ export function InstallButton({
       return;
     }
 
-    const onPrompt = (event: Event) => {
-      // Stops Chrome's own strip so our button is the only ask
-      event.preventDefault();
-      setPrompt(event as InstallPromptEvent);
-    };
-    const onInstalled = () => setPrompt(null);
-
-    window.addEventListener('beforeinstallprompt', onPrompt);
-    window.addEventListener('appinstalled', onInstalled);
-    return () => {
-      window.removeEventListener('beforeinstallprompt', onPrompt);
-      window.removeEventListener('appinstalled', onInstalled);
-    };
+    const sync = () => setPrompt(window.__installPrompt ?? null);
+    sync();
+    window.addEventListener('installpromptchange', sync);
+    return () => window.removeEventListener('installpromptchange', sync);
   }, []);
 
   if (onIos) {
@@ -84,8 +82,9 @@ export function InstallButton({
       aria-label="Install this site as an app"
       title="Install this site as an app"
       onClick={async () => {
-        // The event is single-use, so drop it either way
-        setPrompt(null);
+        // The event is single-use, so drop it either way, from the footer's button too
+        window.__installPrompt = null;
+        window.dispatchEvent(new Event('installpromptchange'));
         try {
           await prompt.prompt();
           await prompt.userChoice;
