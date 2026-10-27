@@ -14,7 +14,7 @@ import {
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'FreeSecureKit is an open-source set of free file tools that run entirely in your browser, built by one developer.',
+    'Docsphin is an open-source set of free file tools that run entirely in your browser, built by one developer.',
 };
 
 export default function AboutPage() {
@@ -22,9 +22,9 @@ export default function AboutPage() {
 
   return (
     <LegalPage id="about" updated="5 October 2026">
-      <h2>What FreeSecureKit is</h2>
+      <h2>What Docsphin is</h2>
       <p>
-        FreeSecureKit is software: a web application that gives you {tools.length} free tools for everyday file
+        Docsphin is software: a web application that gives you {tools.length} free tools for everyday file
         work &mdash; PDFs, spreadsheets, images, structured data, Markdown and plain text. There is
         nothing to install and nothing to sign up for. You open a page, drop in a file, and get the
         result back.
@@ -46,7 +46,7 @@ export default function AboutPage() {
         handing your spreadsheet, your scanned document or your photos to someone else.
       </p>
       <p>
-        FreeSecureKit is built the other way round. All the code that does the work is ordinary
+        Docsphin is built the other way round. All the code that does the work is ordinary
         JavaScript running inside your own browser, on your own machine, so{' '}
         <strong>your files are never uploaded</strong>. There is no server to upload them to: the
         site is a set of static files with no application code running behind it, and no database.
@@ -59,7 +59,7 @@ export default function AboutPage() {
 
       <h2>Who runs it</h2>
       <p>
-        FreeSecureKit is built and maintained by {author.name}, an independent software developer, and
+        Docsphin is built and maintained by {author.name}, an independent software developer, and
         has been online since {author.since}. It is a one-person project: there is no team, no
         investors and no company behind it.
       </p>
@@ -80,7 +80,7 @@ export default function AboutPage() {
         <a href={site.repo} target="_blank" rel="noopener noreferrer">
           {site.repo}
         </a>
-        . FreeSecureKit is copyright {author.since} {author.name}, released under the{' '}
+        . Docsphin is copyright {author.since} {author.name}, released under the{' '}
         <a
           href={`${site.repo}/blob/${site.repoBranch}/LICENSE`}
           target="_blank"

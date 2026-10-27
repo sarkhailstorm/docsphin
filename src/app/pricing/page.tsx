@@ -15,7 +15,7 @@ export default function PricingPage() {
     <LegalPage id="pricing" updated="5 October 2026">
       <h2>Everything is free</h2>
       <p>
-        Every tool on FreeSecureKit costs nothing to use. There is no paid tier, no free trial that runs
+        Every tool on Docsphin costs nothing to use. There is no paid tier, no free trial that runs
         out, no usage limit, no file size cap you can pay to lift, and no feature that unlocks when
         you pay. There is no account, and you are never asked for card details to use anything on
         this site.
@@ -49,7 +49,7 @@ export default function PricingPage() {
 
       <h2>So what is the payment for?</h2>
       <p>
-        FreeSecureKit is written and maintained by one developer. The software is given away, so the
+        Docsphin is written and maintained by one developer. The software is given away, so the
         only way the time spent on it is paid for is if people choose to chip in. A contribution is
         exactly that: <strong>a voluntary gift towards the developer&rsquo;s time and the cost of
         running the site</strong>. It is not a purchase, and nothing is delivered in return.
@@ -79,7 +79,7 @@ export default function PricingPage() {
       </ul>
       <p>
         This site only links out. There is no donate widget and no payment script anywhere on
-        FreeSecureKit, so no payment code ever runs on a page that is handling your files. That is
+        Docsphin, so no payment code ever runs on a page that is handling your files. That is
         deliberate.
       </p>
       <p>
@@ -99,7 +99,7 @@ export default function PricingPage() {
       </p>
       <ul>
         <li>
-          <strong>No licence.</strong> FreeSecureKit is MIT-licensed. Every right the licence grants,
+          <strong>No licence.</strong> Docsphin is MIT-licensed. Every right the licence grants,
           you already have for free.
         </li>
         <li>
@@ -111,7 +111,7 @@ export default function PricingPage() {
           not on whether the person asking has contributed.
         </li>
         <li>
-          <strong>No extra features.</strong> There is one version of FreeSecureKit and everyone gets
+          <strong>No extra features.</strong> There is one version of Docsphin and everyone gets
           the same one. Nothing is hidden behind a payment, before or after.
         </li>
       </ul>

@@ -15,7 +15,7 @@ export function ThemeToggle({ labelled = false }: { labelled?: boolean }) {
     setTheme(next);
     document.documentElement.classList.toggle('dark', next === 'dark');
     try {
-      localStorage.setItem('free-secure-kit:theme', next);
+      localStorage.setItem('docsphin:theme', next);
     } catch {
       // localStorage throws in some private windows; the theme just won't stick
     }

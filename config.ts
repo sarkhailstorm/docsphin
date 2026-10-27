@@ -1,10 +1,10 @@
 export const site = {
-  name: 'FreeSecureKit',
+  name: 'Docsphin',
   tagline: 'Tools that never upload your files',
   description:
     'Open-source tools for spreadsheets, images, PDFs and text, free to use. Everything runs in your browser — your files are never uploaded.',
   url: 'https://freesecurekit.vercel.app',
-  repo: 'https://github.com/sarkhailstorm/free-secure-kit',
+  repo: 'https://github.com/sarkhailstorm/docsphin',
   repoBranch: 'main',
   // Public token, not a secret: it ships in the page source
   googleSiteVerification: 'WOX1L5jSTNu4UD1pxP5jF9KDokyG2cRlziKz1Cqxbb0',
@@ -95,7 +95,7 @@ export const legalPages: readonly {
   title: string;
   blurb: string;
 }[] = [
-  { id: 'about', href: '/about', title: 'About', blurb: 'Who makes FreeSecureKit, and why.' },
+  { id: 'about', href: '/about', title: 'About', blurb: 'Who makes Docsphin, and why.' },
   { id: 'contact', href: '/contact', title: 'Contact', blurb: 'How to reach us.' },
   { id: 'pricing', href: '/pricing', title: 'Pricing', blurb: 'What it costs: nothing.' },
   { id: 'terms', href: '/terms', title: 'Terms', blurb: 'What you agree to by using the site.' },

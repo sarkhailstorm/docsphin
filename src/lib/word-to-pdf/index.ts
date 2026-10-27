@@ -127,7 +127,7 @@ export async function wordToPdf(
   onProgress({ stage: 'drawing', done: document.sections.length, total: document.sections.length });
   await tick();
 
-  doc.setProducer('FreeSecureKit');
+  doc.setProducer('Docsphin');
   doc.setTitle(baseName(file.name));
   const bytes = await doc.save({ useObjectStreams: true, addDefaultPage: false });
 

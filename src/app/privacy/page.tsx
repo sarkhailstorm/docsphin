@@ -5,7 +5,7 @@ import { business, contactEmailConfigured, donationsConfigured, site, support } 
 export const metadata: Metadata = {
   title: 'Privacy',
   description:
-    'What happens to your files, what FreeSecureKit stores in your browser, and what our host can see.',
+    'What happens to your files, what Docsphin stores in your browser, and what our host can see.',
 };
 
 export default function Page() {
@@ -71,25 +71,25 @@ export default function Page() {
         <tbody>
           <tr>
             <td>Light or dark mode</td>
-            <td>free-secure-kit:theme</td>
+            <td>docsphin:theme</td>
             <td>The word light or dark</td>
             <td>Until you clear this site&rsquo;s data</td>
           </tr>
           <tr>
             <td>Your Markdown draft</td>
-            <td>free-secure-kit:markdown-converter:doc</td>
+            <td>docsphin:markdown-converter:doc</td>
             <td>The full text you have typed or pasted into the Markdown Converter</td>
             <td>Until you clear the editor, or clear this site&rsquo;s data</td>
           </tr>
           <tr>
             <td>Markdown export style</td>
-            <td>free-secure-kit:markdown-converter:theme</td>
+            <td>docsphin:markdown-converter:theme</td>
             <td>The name of the style you picked for exports</td>
             <td>Until you clear this site&rsquo;s data</td>
           </tr>
           <tr>
             <td>Downloaded tool files</td>
-            <td>free-secure-kit-assets-v1 (Cache Storage)</td>
+            <td>docsphin-assets-v1 (Cache Storage)</td>
             <td>
               The model and engine files the Background Remover, Passport Photo and PDF unlock
               tools need, kept so they are not fetched again. About 27 MB if you use all of them.
@@ -98,7 +98,7 @@ export default function Page() {
           </tr>
           <tr>
             <td>A copy of the site</td>
-            <td>fsk-shell-&hellip; (Cache Storage)</td>
+            <td>docsphin-shell-&hellip; (Cache Storage)</td>
             <td>
               The pages, styling and code of this site, about 7 MB, so it opens with no
               internet connection. None of your files, and nothing about you.
@@ -110,7 +110,7 @@ export default function Page() {
           </tr>
           <tr>
             <td>Support message flag</td>
-            <td>free-secure-kit:support-nudge-seen</td>
+            <td>docsphin:support-nudge-seen</td>
             <td>A single 1, so a thank-you message can appear at most once</td>
             <td>Until you close the tab</td>
           </tr>
@@ -235,7 +235,7 @@ export default function Page() {
 
       <h2>Contributions</h2>
       <p>
-        Nothing on FreeSecureKit is for sale, and no feature is unlocked by paying. A contribution is a
+        Nothing on Docsphin is for sale, and no feature is unlocked by paying. A contribution is a
         voluntary gift towards the time this takes. It buys nothing and unlocks nothing.
       </p>
       <p>
@@ -300,7 +300,7 @@ export default function Page() {
 
       <h2>Check it for yourself</h2>
       <p>
-        FreeSecureKit is open source under the MIT licence. Every claim on this page can be checked
+        Docsphin is open source under the MIT licence. Every claim on this page can be checked
         against the code, and so can the network tab of your own browser while you use a tool. The
         source is at{' '}
         <a href={site.repo} rel="noopener noreferrer" target="_blank">

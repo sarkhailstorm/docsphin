@@ -5,7 +5,7 @@ import { business, contactEmailConfigured, site, supportProviders } from '@/conf
 export const metadata: Metadata = {
   title: 'Refunds',
   description:
-    'Nothing is sold on FreeSecureKit. If you contributed and want the money back, here is the window, the process and the timeline.',
+    'Nothing is sold on Docsphin. If you contributed and want the money back, here is the window, the process and the timeline.',
 };
 
 export default function Page() {

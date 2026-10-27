@@ -13,7 +13,7 @@ models, and one command-line tool compiled to WebAssembly.
 None of the upstream projects distributes a `NOTICE` file, so clause 4(d) of the
 Apache licence does not apply to any of them.
 
-FreeSecureKit itself remains [MIT](LICENSE). Both licences permit commercial use and
+Docsphin itself remains [MIT](LICENSE). Both licences permit commercial use and
 redistribution, and neither requires this project to change its own licence.
 
 ## MODNet (portrait cut-outs)

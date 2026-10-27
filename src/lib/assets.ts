@@ -8,11 +8,14 @@ export class DownloadError extends Error {
   }
 }
 
-// Changing this name re-downloads every asset for returning visitors
-const CACHE_NAME = 'free-secure-kit-assets-v1';
-const CACHE_PREFIX = 'free-secure-kit-assets-';
-// Cache name from before the rename, adopted so the rename costs no re-download
-const LEGACY_PREFIX = 'securekit-background-remover-';
+// Changing this name re-downloads every asset for returning visitors, unless the old
+// prefix joins LEGACY_PREFIXES
+const CACHE_NAME = 'docsphin-assets-v1';
+const CACHE_PREFIX = 'docsphin-assets-';
+// Cache names from before each rename, adopted so a rename costs no re-download
+const LEGACY_PREFIXES = ['free-secure-kit-assets-', 'securekit-background-remover-'];
+
+const isLegacy = (name: string) => LEGACY_PREFIXES.some((prefix) => name.startsWith(prefix));
 
 export interface Asset {
   url: string;
@@ -55,7 +58,7 @@ async function openCache(): Promise<Cache | null> {
 async function adoptLegacy(cache: Cache): Promise<void> {
   try {
     for (const name of await caches.keys()) {
-      if (!name.startsWith(LEGACY_PREFIX)) continue;
+      if (!isLegacy(name)) continue;
       const old = await caches.open(name);
       for (const request of await old.keys()) {
         if (!(await cache.match(request))) {
@@ -220,7 +223,7 @@ export async function clearDownloads(): Promise<void> {
   try {
     if (typeof caches === 'undefined') return;
     for (const name of await caches.keys()) {
-      if (name.startsWith(CACHE_PREFIX) || name.startsWith(LEGACY_PREFIX)) {
+      if (name.startsWith(CACHE_PREFIX) || isLegacy(name)) {
         await caches.delete(name);
       }
     }

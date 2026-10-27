@@ -1,15 +1,15 @@
 (function () {
-  var KEY = 'free-secure-kit:theme';
-  var LEGACY = 'securekit:theme';
+  var KEY = 'docsphin:theme';
+  // Saved under the app's earlier names, so a returning visitor keeps their choice.
+  var LEGACY = ['free-secure-kit:theme', 'securekit:theme'];
   var choice = null;
   try {
     choice = localStorage.getItem(KEY);
-    if (choice === null) {
-      // Saved before the rename, so a returning visitor keeps their choice.
-      choice = localStorage.getItem(LEGACY);
+    for (var i = 0; choice === null && i < LEGACY.length; i++) {
+      choice = localStorage.getItem(LEGACY[i]);
       if (choice !== null) {
         localStorage.setItem(KEY, choice);
-        localStorage.removeItem(LEGACY);
+        localStorage.removeItem(LEGACY[i]);
       }
     }
   } catch (e) {}

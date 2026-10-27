@@ -556,7 +556,7 @@ export async function imagesToPdf(
     );
   }
 
-  out.setProducer('FreeSecureKit');
+  out.setProducer('Docsphin');
   return {
     bytes: await out.save({ useObjectStreams: true, addDefaultPage: false }),
     pageCount: out.getPageCount(),

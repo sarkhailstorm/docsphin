@@ -36,10 +36,10 @@ import { PreviewPane } from './PreviewPane';
 import { PrintSurface } from './PrintSurface';
 import { forgetLocal, readLocal } from '@/lib/storage';
 
-const DOC_KEY = 'free-secure-kit:markdown-converter:doc';
-const THEME_KEY = 'free-secure-kit:markdown-converter:theme';
-const LEGACY_DOC_KEY = 'securekit:markdown-converter:doc';
-const LEGACY_THEME_KEY = 'securekit:markdown-converter:theme';
+const DOC_KEY = 'docsphin:markdown-converter:doc';
+const THEME_KEY = 'docsphin:markdown-converter:theme';
+const LEGACY_DOC_KEYS = ['free-secure-kit:markdown-converter:doc', 'securekit:markdown-converter:doc'];
+const LEGACY_THEME_KEYS = ['free-secure-kit:markdown-converter:theme', 'securekit:markdown-converter:theme'];
 
 const RENDER_DEBOUNCE_MS = 150;
 const LARGE_DOC_CHARS = 120_000;
@@ -106,9 +106,9 @@ export function MarkdownConverter({ active = true }: { active?: boolean }) {
 
   useEffect(() => {
     try {
-      const saved = readLocal(DOC_KEY, LEGACY_DOC_KEY);
+      const saved = readLocal(DOC_KEY, LEGACY_DOC_KEYS);
       if (saved !== null) setSource(saved);
-      const savedTheme = readLocal(THEME_KEY, LEGACY_THEME_KEY);
+      const savedTheme = readLocal(THEME_KEY, LEGACY_THEME_KEYS);
       if (isThemeId(savedTheme)) setThemeId(savedTheme);
     } catch {
       setSaveState('blocked');
@@ -185,7 +185,7 @@ export function MarkdownConverter({ active = true }: { active?: boolean }) {
     if (clearTimer.current) clearTimeout(clearTimer.current);
     setConfirmClear(false);
     setSource('');
-    forgetLocal(DOC_KEY, LEGACY_DOC_KEY);
+    forgetLocal(DOC_KEY, LEGACY_DOC_KEYS);
     setPane('write');
     textareaRef.current?.focus();
     toast.info('Editor cleared.');

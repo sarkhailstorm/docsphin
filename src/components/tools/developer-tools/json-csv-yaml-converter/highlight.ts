@@ -67,10 +67,10 @@ export async function highlightToHtml(text: string, format: DataFormat): Promise
 }
 
 export const HIGHLIGHT_THEME_CSS = `
-.free-secure-kit-hl .hljs-attr,.free-secure-kit-hl .hljs-attribute{color:rgb(var(--accent))}
-.free-secure-kit-hl .hljs-string,.free-secure-kit-hl .hljs-quote{color:rgb(var(--ok))}
-.free-secure-kit-hl .hljs-number,.free-secure-kit-hl .hljs-literal,.free-secure-kit-hl .hljs-keyword{color:rgb(var(--warn))}
-.free-secure-kit-hl .hljs-bullet,.free-secure-kit-hl .hljs-meta,.free-secure-kit-hl .hljs-type,.free-secure-kit-hl .hljs-tag{color:rgb(var(--muted))}
-.free-secure-kit-hl .hljs-comment{color:rgb(var(--faint));font-style:italic}
-.free-secure-kit-hl .hljs-punctuation{color:rgb(var(--faint))}
+.docsphin-hl .hljs-attr,.docsphin-hl .hljs-attribute{color:rgb(var(--accent))}
+.docsphin-hl .hljs-string,.docsphin-hl .hljs-quote{color:rgb(var(--ok))}
+.docsphin-hl .hljs-number,.docsphin-hl .hljs-literal,.docsphin-hl .hljs-keyword{color:rgb(var(--warn))}
+.docsphin-hl .hljs-bullet,.docsphin-hl .hljs-meta,.docsphin-hl .hljs-type,.docsphin-hl .hljs-tag{color:rgb(var(--muted))}
+.docsphin-hl .hljs-comment{color:rgb(var(--faint));font-style:italic}
+.docsphin-hl .hljs-punctuation{color:rgb(var(--faint))}
 `.trim();

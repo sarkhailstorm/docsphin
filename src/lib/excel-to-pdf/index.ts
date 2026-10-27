@@ -126,7 +126,7 @@ export async function excelToPdf(
   onProgress({ stage: 'drawing', done: chosen.length, total: chosen.length });
   await tick();
 
-  doc.setProducer('FreeSecureKit');
+  doc.setProducer('Docsphin');
   doc.setTitle(baseName(workbook.filename));
   const bytes = await doc.save({ useObjectStreams: true, addDefaultPage: false });
 

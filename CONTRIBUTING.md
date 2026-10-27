@@ -18,8 +18,8 @@ person, so a short issue before a large pull request saves us both time.
 Node 18.18 or newer.
 
 ```bash
-git clone https://github.com/sarkhailstorm/free-secure-kit.git
-cd free-secure-kit
+git clone https://github.com/sarkhailstorm/docsphin.git
+cd docsphin
 npm install
 npm run dev
 ```
@@ -66,6 +66,6 @@ new card, open an issue first.
 - The models in `public/models/` are committed; the ONNX runtime and qpdf are
   copied from `node_modules` at install time and are not. See
   [THIRD-PARTY-LICENCES.md](THIRD-PARTY-LICENCES.md).
-- Browser storage keys are prefixed `free-secure-kit:`, with the pre-rename
-  `securekit:` keys still read once and migrated. Do not rename a key without
-  carrying the old one across.
+- Browser storage keys are prefixed `docsphin:`, with the older
+  `free-secure-kit:` and `securekit:` keys still read once and migrated. Do not
+  rename a key without carrying the old one across.

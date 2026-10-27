@@ -33,8 +33,8 @@ interface ToastApi {
 
 const ToastContext = createContext<ToastApi | null>(null);
 
-const NUDGE_KEY = 'free-secure-kit:support-nudge-seen';
-const LEGACY_NUDGE_KEY = 'securekit:support-nudge-seen';
+const NUDGE_KEY = 'docsphin:support-nudge-seen';
+const LEGACY_NUDGE_KEYS = ['free-secure-kit:support-nudge-seen', 'securekit:support-nudge-seen'];
 
 export function useToast(): ToastApi {
   const ctx = useContext(ToastContext);
@@ -87,7 +87,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   const api = useMemo<ToastApi>(() => {
     const alreadySeen = () => {
       try {
-        return readSession(NUDGE_KEY, LEGACY_NUDGE_KEY) === '1';
+        return readSession(NUDGE_KEY, LEGACY_NUDGE_KEYS) === '1';
       } catch {
         return false;
       }
