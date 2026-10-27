@@ -8,7 +8,7 @@ Merge, organise and shrink PDFs, add page numbers, a watermark or a password,
 turn a Word file or a spreadsheet into a PDF and back, and tidy a messy
 spreadsheet. Nothing is uploaded.
 
-[Live site](https://freesecurekit.vercel.app) · [Report an issue](https://github.com/sarkhailstorm/docsphin/issues)
+[Live site](https://docsphin.vercel.app) · [Report an issue](https://github.com/sarkhailstorm/docsphin/issues)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 

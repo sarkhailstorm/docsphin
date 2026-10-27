@@ -3,7 +3,7 @@ export const site = {
   tagline: 'Tools that never upload your files',
   description:
     'Open-source tools for PDFs, Word files and spreadsheets, free to use. Everything runs in your browser — your files are never uploaded.',
-  url: 'https://freesecurekit.vercel.app',
+  url: 'https://docsphin.vercel.app',
   repo: 'https://github.com/sarkhailstorm/docsphin',
   repoBranch: 'main',
   // Public token, not a secret: it ships in the page source
